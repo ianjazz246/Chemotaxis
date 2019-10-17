@@ -2,16 +2,36 @@
 
 ArrayList<Bacteria> bacteriaList = new ArrayList<Bacteria>();
 
+ArrayList<Food> foodList = new ArrayList<Food>();
+
  void setup()   
  {     
  	//initialize bacteria variables here   
  	size(400, 400);
+
  	for (int i = 0; i < 5; i++) {
- 		bacteriaList.add(new Bacteria(width / 2, height / 2, color((int)(Math.random() * 256)), 5));
+ 		foodList.add(new Food((int)(Math.random() * 400), (int)(Math.random() * 400), 10));
  	}
+
+ 	for (int i = 0; i < 5; i++) {
+ 		switch((int)(Math.random() * 4)) {
+ 			case 0:
+ 				bacteriaList.add(new MouseFollowBacteria(width / 2, height / 2, 15));
+ 				break;
+ 			case 1: case 2:
+ 				bacteriaList.add(new Bacteria(width / 2, height / 2, 15));
+ 				break;
+ 			case 3:
+ 				bacteriaList.add(new FoodFollowBacteria(width / 2, height / 2, 15));
+ 		}
+ 		
+ 	}
+
+
  }   
  void draw()   
- {    
+ {   
+ 	background(125); 
  	//move and show the bacteria   
  	for (Bacteria bacteria : bacteriaList)
  	{
@@ -19,19 +39,20 @@ ArrayList<Bacteria> bacteriaList = new ArrayList<Bacteria>();
  		bacteria.show();
  	}
  }  
- class Bacteria    
- {     
+
+class Bacteria    
+{     
  	//lots of java!   
  	int x, y;
- 	color clr;
+ 	int clr;
  	int size;
 
- 	Bacteria (int x, int y, color clr, int size)
+ 	Bacteria (int x, int y, int size)
  	{
  		this.x = x;
  		this.y = y;
- 		this.clr = clr;
  		this.size = size;
+ 		this.clr = color(240, 20, 20);
  	}
 
 
@@ -43,7 +64,96 @@ ArrayList<Bacteria> bacteriaList = new ArrayList<Bacteria>();
 
  	void move()
  	{
- 		this.x += (int)(Math.random() * 3 - 1);
- 		this.y += (int)(Math.random() * 3 - 1);
+ 		this.x += (int)(Math.random() * 5) - 2;
+ 		this.y += (int)(Math.random() * 5) - 2;
  	}
  }    
+
+class MouseFollowBacteria extends Bacteria
+{
+	MouseFollowBacteria (int x, int y, int size)
+ 	{
+ 		super(x, y, size);
+ 		this.clr = color(20, 240, 20);
+ 	}
+
+	@Override
+	void move()
+	{
+		this.x += (int)(Math.random() * 5) - 2 + Integer.signum(mouseX - this.x);
+ 		this.y += (int)(Math.random() * 5) - 2 + Integer.signum(mouseY - this.y);
+	}
+} 
+
+class FoodFollowBacteria extends Bacteria
+{
+	Food targetedFood;
+	FoodFollowBacteria (int x, int y, int size)
+ 	{
+ 		super(x, y, size);
+ 		this.clr = color(20, 20, 240);
+ 	}
+
+ 	@Override
+ 	void move() {
+ 		if (this.targetedFood.getEaten())
+ 		{
+ 			findNewFood();
+ 		}
+
+		this.x += (int)(Math.random() * 5) - 2 + Integer.signum(this.targetedFood.getX() - this.x);
+ 		this.y += (int)(Math.random() * 5) - 2 + Integer.signum(this.targetedFood.getY() - this.y);
+ 	}
+
+ 	private Food findNewFood()
+ 	{
+ 		double minDist = 0;
+ 		for (Food food : foodList)
+ 		{
+ 			double currDist = dist(this.x, this.y, food.getX(), food.getY());
+ 			if (currDist < minDist) {
+ 				this.targetedFood = food;
+ 				minDist = currDist;
+ 			}
+ 		}
+ 		return this.targetedFood;
+ 	}
+}
+
+class Food
+{
+	int x, y, nutrition;
+	boolean eaten;
+	Food(int x, int y, int nutrition)
+	{
+		this.x = x;
+		this.y = y;
+		this.nutrition = nutrition;
+		eaten = false;
+	}
+
+	void show()
+	{
+		fill(115, 96, 46);
+		ellipse(this.x, this.y, this.nutrition, this.nutrition);
+	}
+
+	int eat()
+	{
+		eaten = true;
+		return nutrition;
+	}
+
+	boolean getEaten()
+	{
+		return eaten;
+	}
+
+	int getX() {
+		return this.x;
+	}
+
+	int getY() {
+		return this.y;
+	}
+}
