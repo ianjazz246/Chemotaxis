@@ -36,13 +36,34 @@ ArrayList<Food> foodList = new ArrayList<Food>();
  	for (Bacteria bacteria : bacteriaList)
  	{
  		bacteria.move();
+ 		bacteria.eat();
  		bacteria.show();
+
  	}
+
+ 	for (int i = 0; i < foodList.size(); i++) {
+ 		Food food = foodList.get(i);
+ 		if (food.getEaten())
+ 		{
+ 			foodList.remove(i);
+ 		}
+ 		else
+ 		{
+ 			food.show();
+ 		}
+ 	}
+
+ 	//randomly add more food if less than 8 food
+ 	if (foodList.size() < 8) {
+ 		if (Math.random() < 0.05) {
+	 		foodList.add(new Food((int)(Math.random() * 400), (int)(Math.random() * 400), 10));
+	 	}
+ 	}
+ 	
  }  
 
 class Bacteria    
-{     
- 	//lots of java!   
+{       
  	int x, y;
  	int clr;
  	int size;
@@ -64,8 +85,25 @@ class Bacteria
 
  	void move()
  	{
- 		this.x += (int)(Math.random() * 5) - 2;
+
+ 		int moveSpeed = this.size / 3;
+ 		//value to subtract from Math.random()to scale it evenly.
+ 		int shift = moveSpeed / 2;
+
  		this.y += (int)(Math.random() * 5) - 2;
+ 		this.x += (int)(Math.random() * 5) - 2;
+ 	}
+
+ 	void eat()
+ 	{
+ 		for (int i = 0; i < foodList.size(); i++)
+ 		{
+ 			Food food = foodList.get(i);
+ 			if (dist(food.getX(), food.getY(), this.x, this.y) < this.size / 2 + food.nutrition / 2)
+ 			{
+ 				this.size += food.eat() / 5;
+ 			}
+ 		}
  	}
  }    
 
@@ -80,8 +118,16 @@ class MouseFollowBacteria extends Bacteria
 	@Override
 	void move()
 	{
-		this.x += (int)(Math.random() * 5) - 2 + Integer.signum(mouseX - this.x);
+		double moveSpeed = 30. / this.size;
+ 		//value to subtract from Math.random()to scale it evenly.
+ 		int shift = (int)(moveSpeed / 2);
+
+ 		// System.out.println(moveSpeed);
+ 		// System.out.println(shift);
+ 		//System.out.println((int)(Math.random() * moveSpeed) - shift);
+
  		this.y += (int)(Math.random() * 5) - 2 + Integer.signum(mouseY - this.y);
+		this.x += (int)(Math.random() * 5) - 2 + Integer.signum(mouseX - this.x);
 	}
 } 
 
@@ -92,22 +138,41 @@ class FoodFollowBacteria extends Bacteria
  	{
  		super(x, y, size);
  		this.clr = color(20, 20, 240);
+ 		this.findNewFood();
  	}
 
  	@Override
  	void move() {
- 		if (this.targetedFood.getEaten())
+ 		if (this.targetedFood != null)
  		{
- 			findNewFood();
+ 			if (this.targetedFood.getEaten())
+	 		{
+	 			findNewFood();
+	 			if (this.targetedFood == null) {
+	 				super.move();
+	 				return;
+	 			}
+	 		}
+
+
+
+			this.x += (int)(Math.random() * 5) - 2 + Integer.signum(this.targetedFood.getX() - this.x);
+	 		this.y += (int)(Math.random() * 5) - 2 + Integer.signum(this.targetedFood.getY() - this.y);
+ 		}
+ 		else
+ 		{
+ 			super.move();
  		}
 
-		this.x += (int)(Math.random() * 5) - 2 + Integer.signum(this.targetedFood.getX() - this.x);
- 		this.y += (int)(Math.random() * 5) - 2 + Integer.signum(this.targetedFood.getY() - this.y);
  	}
 
  	private Food findNewFood()
  	{
- 		double minDist = 0;
+ 		double minDist = Double.MAX_VALUE;
+ 		if (foodList.size() < 1) {
+ 			this.targetedFood = null;
+ 			return null;
+ 		}
  		for (Food food : foodList)
  		{
  			double currDist = dist(this.x, this.y, food.getX(), food.getY());
