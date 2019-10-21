@@ -13,22 +13,39 @@ ArrayList<Food> foodList = new ArrayList<Food>();
  		foodList.add(new Food((int)(Math.random() * 400), (int)(Math.random() * 400), 10));
  	}
 
- 	for (int i = 0; i < 5; i++) {
- 		switch((int)(Math.random() * 4)) {
- 			case 0:
- 				bacteriaList.add(new MouseFollowBacteria(width / 2, height / 2, 15));
- 				break;
- 			case 1: case 2:
- 				bacteriaList.add(new Bacteria(width / 2, height / 2, 15));
- 				break;
- 			case 3:
- 				bacteriaList.add(new FoodFollowBacteria(width / 2, height / 2, 15));
- 		}
- 		
+ 	for (int i = 0; i < 7; i++) {
+ 		addNewBacteria();
  	}
 
 
- }   
+ }
+
+ Bacteria addNewBacteria()
+ {
+ 	Bacteria newBacteria;
+ 	double rand = Math.random();
+
+
+ 	if (rand < 0.2)
+ 	{
+ 		newBacteria = new MouseFollowBacteria(width / 2, height / 2, 15);
+ 	}
+ 	else if (rand < 0.6)
+ 	{
+ 		newBacteria = new Bacteria(width / 2, height / 2, 15);
+ 	}
+ 	else if (rand < 0.8)
+ 	{
+ 		newBacteria = new FoodFollowBacteria(width / 2, height / 2, 15);
+ 	}
+ 	else
+ 	{
+ 		newBacteria = new MouseRepelBacteria(width / 2, height / 2, 15);
+ 	}
+	bacteriaList.add(newBacteria);
+	return newBacteria;
+ } 
+
  void draw()   
  {   
  	background(125); 
@@ -62,6 +79,11 @@ ArrayList<Food> foodList = new ArrayList<Food>();
  	
  }  
 
+ void mouseClicked()
+ {
+ 	addNewBacteria();
+ }
+
 class Bacteria    
 {       
  	int x, y;
@@ -92,6 +114,28 @@ class Bacteria
 
  		this.y += (int)(Math.random() * 5) - 2;
  		this.x += (int)(Math.random() * 5) - 2;
+ 		this.keepInBounds();
+ 		
+ 	}
+
+ 	void keepInBounds() {
+ 		if (this.x > 400)
+ 		{
+ 			this.x = 400;
+ 		}
+ 		else if (this.x < 0)
+ 		{
+ 			this.x = 0;
+ 		}
+
+ 		if (this.y > 400)
+ 		{
+ 			this.y = 400;
+ 		}
+ 		else if (this.y < 0)
+ 		{
+ 			this.y = 0;
+ 		}
  	}
 
  	void eat()
@@ -128,8 +172,39 @@ class MouseFollowBacteria extends Bacteria
 
  		this.y += (int)(Math.random() * 5) - 2 + Integer.signum(mouseY - this.y);
 		this.x += (int)(Math.random() * 5) - 2 + Integer.signum(mouseX - this.x);
+		this.keepInBounds();
 	}
-} 
+}
+
+class MouseRepelBacteria extends Bacteria
+{
+	MouseRepelBacteria (int x, int y, int size)
+ 	{
+ 		super(x, y, size);
+ 		this.clr = color(20, 240, 240);
+ 	}
+
+ 	@Override
+	void move()
+	{
+		double moveSpeed = 30. / this.size;
+ 		//value to subtract from Math.random()to scale it evenly.
+ 		int shift = (int)(moveSpeed / 2);
+
+ 		if (dist(this.x, this.y, mouseX, mouseY) < 70)
+ 		{
+ 			this.y += (int)(Math.random() * 5) - 2 - Integer.signum(mouseY - this.y);
+			this.x += (int)(Math.random() * 5) - 2 - Integer.signum(mouseX - this.x);
+ 		}
+ 		else
+ 		{
+ 			super.move();
+ 		}
+
+ 		this.keepInBounds();
+	}
+
+}
 
 class FoodFollowBacteria extends Bacteria
 {
@@ -158,6 +233,8 @@ class FoodFollowBacteria extends Bacteria
 
 			this.x += (int)(Math.random() * 5) - 2 + Integer.signum(this.targetedFood.getX() - this.x);
 	 		this.y += (int)(Math.random() * 5) - 2 + Integer.signum(this.targetedFood.getY() - this.y);
+
+	 		this.keepInBounds();
  		}
  		else
  		{
