@@ -86,11 +86,11 @@ ArrayList<Food> foodList = new ArrayList<Food>();
 
 class Bacteria    
 {       
- 	int x, y;
+ 	float x, y;
  	int clr;
  	int size;
 
- 	Bacteria (int x, int y, int size)
+ 	Bacteria (float x, float y, int size)
  	{
  		this.x = x;
  		this.y = y;
@@ -112,8 +112,13 @@ class Bacteria
  		//value to subtract from Math.random()to scale it evenly.
  		int shift = moveSpeed / 2;
 
- 		this.y += (int)(Math.random() * 5) - 2;
- 		this.x += (int)(Math.random() * 5) - 2;
+ 		//this.y += Math.random() * 5.0 - 2.0;
+ 		float rangeMax = Math.max(0.5, 60 / (2 * this.size));
+ 		System.out.println(rangeMax);
+ 		float rangeMin = -rangeMax;
+
+ 		this.y += rangeMin + (rangeMax - rangeMin) * Math.random() * rangeMax;
+ 		this.x += rangeMin + (rangeMax - rangeMin) * Math.random() * rangeMax;
  		this.keepInBounds();
  		
  	}
@@ -153,7 +158,7 @@ class Bacteria
 
 class MouseFollowBacteria extends Bacteria
 {
-	MouseFollowBacteria (int x, int y, int size)
+	MouseFollowBacteria (float x, float y, int size)
  	{
  		super(x, y, size);
  		this.clr = color(20, 240, 20);
@@ -162,23 +167,30 @@ class MouseFollowBacteria extends Bacteria
 	@Override
 	void move()
 	{
-		double moveSpeed = 30. / this.size;
+		float moveSpeed = 30. / this.size;
  		//value to subtract from Math.random()to scale it evenly.
- 		int shift = (int)(moveSpeed / 2);
+ 		float shift = moveSpeed / 2.;
 
  		// System.out.println(moveSpeed);
  		// System.out.println(shift);
  		//System.out.println((int)(Math.random() * moveSpeed) - shift);
 
- 		this.y += (int)(Math.random() * 5) - 2 + Integer.signum(mouseY - this.y);
-		this.x += (int)(Math.random() * 5) - 2 + Integer.signum(mouseX - this.x);
+ 		float rangeMax = Math.max(0.5, 60 / (2 * this.size));
+ 		System.out.println(rangeMax);
+ 		float rangeMin = -rangeMax;
+
+ 		// float rangeMin = -2.0;
+ 		// float rangeMax = 2.0;
+
+ 		this.x += rangeMin + (rangeMax - rangeMin) * Math.random() + Math.signum(mouseX - this.x) * rangeMax;
+ 		this.y += rangeMin + (rangeMax - rangeMin) * Math.random() + Math.signum(mouseY - this.y) * rangeMax; 
 		this.keepInBounds();
 	}
 }
 
 class MouseRepelBacteria extends Bacteria
 {
-	MouseRepelBacteria (int x, int y, int size)
+	MouseRepelBacteria (float x, float y, int size)
  	{
  		super(x, y, size);
  		this.clr = color(20, 240, 240);
@@ -189,12 +201,18 @@ class MouseRepelBacteria extends Bacteria
 	{
 		double moveSpeed = 30. / this.size;
  		//value to subtract from Math.random()to scale it evenly.
- 		int shift = (int)(moveSpeed / 2);
+ 		double shift = moveSpeed / 2.;
 
  		if (dist(this.x, this.y, mouseX, mouseY) < 70)
  		{
- 			this.y += (int)(Math.random() * 5) - 2 - Integer.signum(mouseY - this.y);
-			this.x += (int)(Math.random() * 5) - 2 - Integer.signum(mouseX - this.x);
+ 			// float rangeMin = -2.0;
+ 			// float rangeMax = 2.0;
+
+ 			float rangeMax = Math.max(0.5, 60 / (2 * this.size));
+	 		float rangeMin = -rangeMax;
+
+ 			this.x += rangeMin + (rangeMax - rangeMin) * Math.random() - Math.signum(mouseX - this.x) * rangeMax;
+ 			this.y += rangeMin + (rangeMax - rangeMin) * Math.random() - Math.signum(mouseY - this.y) * rangeMax; 
  		}
  		else
  		{
@@ -209,7 +227,7 @@ class MouseRepelBacteria extends Bacteria
 class FoodFollowBacteria extends Bacteria
 {
 	Food targetedFood;
-	FoodFollowBacteria (int x, int y, int size)
+	FoodFollowBacteria (float x, float y, int size)
  	{
  		super(x, y, size);
  		this.clr = color(20, 20, 240);
@@ -229,10 +247,15 @@ class FoodFollowBacteria extends Bacteria
 	 			}
 	 		}
 
+	 		// float rangeMin = -2.0;
+ 			// float rangeMax = 2.0;
 
+			float rangeMax = Math.max(0.5, 60 / (2 * this.size));
+	 		float rangeMin = -rangeMax;
+	 		System.out.println(rangeMax);
 
-			this.x += (int)(Math.random() * 5) - 2 + Integer.signum(this.targetedFood.getX() - this.x);
-	 		this.y += (int)(Math.random() * 5) - 2 + Integer.signum(this.targetedFood.getY() - this.y);
+ 			this.x += rangeMin + (rangeMax - rangeMin) * Math.random() + Math.signum(this.targetedFood.getX() - this.x) * rangeMax;
+ 			this.y += rangeMin + (rangeMax - rangeMin) * Math.random() + Math.signum(this.targetedFood.getY() - this.y) * rangeMax; 
 
 	 		this.keepInBounds();
  		}
@@ -264,9 +287,10 @@ class FoodFollowBacteria extends Bacteria
 
 class Food
 {
-	int x, y, nutrition;
+	float x, y;
+	int nutrition;
 	boolean eaten;
-	Food(int x, int y, int nutrition)
+	Food(float x, float y, int nutrition)
 	{
 		this.x = x;
 		this.y = y;
@@ -291,11 +315,11 @@ class Food
 		return eaten;
 	}
 
-	int getX() {
+	float getX() {
 		return this.x;
 	}
 
-	int getY() {
+	float getY() {
 		return this.y;
 	}
 }
