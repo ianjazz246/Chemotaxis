@@ -10,7 +10,7 @@ ArrayList<Food> foodList = new ArrayList<Food>();
  	size(400, 400);
 
  	for (int i = 0; i < 5; i++) {
- 		foodList.add(new Food((int)(Math.random() * 400), (int)(Math.random() * 400), 10));
+ 		foodList.add(new Food((int)(Math.random() * width), (int)(Math.random() * height), 10));
  	}
 
  	for (int i = 0; i < 7; i++) {
@@ -90,12 +90,15 @@ class Bacteria
  	int clr;
  	int size;
 
+ 	static final float START_SPEED = 3.75; //speed at nutrition 0. Bacteria start at nutrition 15
+ 	static final float SPEED_DECREASE_FACTOR = 20; //multiplier for speed decrease per nutrition
+
  	Bacteria (float x, float y, int size)
  	{
  		this.x = x;
  		this.y = y;
  		this.size = size;
- 		this.clr = color(240, 20, 20);
+ 		this.clr = color(240, 240, 240);
  	}
 
 
@@ -113,12 +116,12 @@ class Bacteria
  		int shift = moveSpeed / 2;
 
  		//this.y += Math.random() * 5.0 - 2.0;
- 		float rangeMax = Math.max(0.5, 60 / (2 * this.size));
+ 		float rangeMax = Math.max(0.5, Bacteria.START_SPEED - this.size / Bacteria.SPEED_DECREASE_FACTOR);
  		System.out.println(rangeMax);
  		float rangeMin = -rangeMax;
 
- 		this.y += rangeMin + (rangeMax - rangeMin) * Math.random() * rangeMax;
- 		this.x += rangeMin + (rangeMax - rangeMin) * Math.random() * rangeMax;
+ 		this.y += rangeMin + (rangeMax - rangeMin) * Math.random();
+ 		this.x += rangeMin + (rangeMax - rangeMin) * Math.random();
  		this.keepInBounds();
  		
  	}
@@ -175,7 +178,7 @@ class MouseFollowBacteria extends Bacteria
  		// System.out.println(shift);
  		//System.out.println((int)(Math.random() * moveSpeed) - shift);
 
- 		float rangeMax = Math.max(0.5, 60 / (2 * this.size));
+ 		float rangeMax = Math.max(0.5, Bacteria.START_SPEED - this.size / Bacteria.SPEED_DECREASE_FACTOR);
  		System.out.println(rangeMax);
  		float rangeMin = -rangeMax;
 
@@ -208,7 +211,7 @@ class MouseRepelBacteria extends Bacteria
  			// float rangeMin = -2.0;
  			// float rangeMax = 2.0;
 
- 			float rangeMax = Math.max(0.5, 60 / (2 * this.size));
+ 			float rangeMax = Math.max(0.5, Bacteria.START_SPEED - this.size / Bacteria.SPEED_DECREASE_FACTOR);
 	 		float rangeMin = -rangeMax;
 
  			this.x += rangeMin + (rangeMax - rangeMin) * Math.random() - Math.signum(mouseX - this.x) * rangeMax;
@@ -250,7 +253,7 @@ class FoodFollowBacteria extends Bacteria
 	 		// float rangeMin = -2.0;
  			// float rangeMax = 2.0;
 
-			float rangeMax = Math.max(0.5, 60 / (2 * this.size));
+			float rangeMax = Math.max(0.5, Bacteria.START_SPEED - this.size / Bacteria.SPEED_DECREASE_FACTOR);
 	 		float rangeMin = -rangeMax;
 	 		System.out.println(rangeMax);
 
@@ -266,7 +269,7 @@ class FoodFollowBacteria extends Bacteria
 
  	}
 
- 	private Food findNewFood()
+ 	Food findNewFood()
  	{
  		double minDist = Double.MAX_VALUE;
  		if (foodList.size() < 1) {
