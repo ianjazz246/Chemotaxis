@@ -167,7 +167,6 @@ class MouseFollowBacteria extends Bacteria
  		this.clr = color(20, 240, 20);
  	}
 
-	@Override
 	void move()
 	{
 		float moveSpeed = 30. / this.size;
@@ -199,7 +198,7 @@ class MouseRepelBacteria extends Bacteria
  		this.clr = color(20, 240, 240);
  	}
 
- 	@Override
+ 	
 	void move()
 	{
 		double moveSpeed = 30. / this.size;
@@ -237,7 +236,7 @@ class FoodFollowBacteria extends Bacteria
  		this.findNewFood();
  	}
 
- 	@Override
+ 	
  	void move() {
  		if (this.targetedFood != null)
  		{
