@@ -182,8 +182,8 @@ class MouseFollowBacteria extends Bacteria
  		// float rangeMin = -2.0;
  		// float rangeMax = 2.0;
 
- 		this.x += rangeMin + (rangeMax - rangeMin) * Math.random() + Math.signum(mouseX - this.x) * rangeMax;
- 		this.y += rangeMin + (rangeMax - rangeMin) * Math.random() + Math.signum(mouseY - this.y) * rangeMax; 
+ 		this.x += rangeMin + (rangeMax - rangeMin) * Math.random() + sigNum(mouseX - this.x) * rangeMax;
+ 		this.y += rangeMin + (rangeMax - rangeMin) * Math.random() + sigNum(mouseY - this.y) * rangeMax; 
 		this.keepInBounds();
 	}
 }
@@ -211,8 +211,8 @@ class MouseRepelBacteria extends Bacteria
  			float rangeMax = Math.max(0.5, Bacteria.START_SPEED - this.size / Bacteria.SPEED_DECREASE_FACTOR);
 	 		float rangeMin = -rangeMax;
 
- 			this.x += rangeMin + (rangeMax - rangeMin) * Math.random() - Math.signum(mouseX - this.x) * rangeMax;
- 			this.y += rangeMin + (rangeMax - rangeMin) * Math.random() - Math.signum(mouseY - this.y) * rangeMax; 
+ 			this.x += rangeMin + (rangeMax - rangeMin) * Math.random() - sigNum(mouseX - this.x) * rangeMax;
+ 			this.y += rangeMin + (rangeMax - rangeMin) * Math.random() - sigNum(mouseY - this.y) * rangeMax; 
  		}
  		else
  		{
@@ -253,8 +253,8 @@ class FoodFollowBacteria extends Bacteria
 			float rangeMax = Math.max(0.5, Bacteria.START_SPEED - this.size / Bacteria.SPEED_DECREASE_FACTOR);
 	 		float rangeMin = -rangeMax;
 
- 			this.x += rangeMin + (rangeMax - rangeMin) * Math.random() + Math.signum(this.targetedFood.getX() - this.x) * rangeMax;
- 			this.y += rangeMin + (rangeMax - rangeMin) * Math.random() + Math.signum(this.targetedFood.getY() - this.y) * rangeMax; 
+ 			this.x += rangeMin + (rangeMax - rangeMin) * Math.random() + sigNum(this.targetedFood.getX() - this.x) * rangeMax;
+ 			this.y += rangeMin + (rangeMax - rangeMin) * Math.random() + sigNum(this.targetedFood.getY() - this.y) * rangeMax; 
 
 	 		this.keepInBounds();
  		}
@@ -320,5 +320,21 @@ class Food
 
 	float getY() {
 		return this.y;
+	}
+}
+
+float sigNum(float n)
+{
+	if (n > 0)
+	{
+		return 1;
+	}
+	else if (n < 0)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
 	}
 }
