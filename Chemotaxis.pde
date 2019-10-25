@@ -195,7 +195,7 @@ class MouseRepelBacteria extends Bacteria
 {
 	MouseRepelBacteria (float x, float y, int size)
  	{
- 		super(x, y, size);
+ 		super(x, y, size); 
  		this.clr = color(20, 240, 240);
  	}
 
