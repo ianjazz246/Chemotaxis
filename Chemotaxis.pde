@@ -270,7 +270,7 @@ class FoodFollowBacteria extends Bacteria
 
  	Food findNewFood()
  	{
- 		double minDist = Double.MAX_VALUE;
+ 		double minDist = 999999999.;
  		if (foodList.size() < 1) {
  			this.targetedFood = null;
  			return null;
