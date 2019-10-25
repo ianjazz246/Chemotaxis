@@ -117,7 +117,6 @@ class Bacteria
 
  		//this.y += Math.random() * 5.0 - 2.0;
  		float rangeMax = Math.max(0.5, Bacteria.START_SPEED - this.size / Bacteria.SPEED_DECREASE_FACTOR);
- 		System.out.println(rangeMax);
  		float rangeMin = -rangeMax;
 
  		this.y += rangeMin + (rangeMax - rangeMin) * Math.random();
@@ -178,7 +177,6 @@ class MouseFollowBacteria extends Bacteria
  		//System.out.println((int)(Math.random() * moveSpeed) - shift);
 
  		float rangeMax = Math.max(0.5, Bacteria.START_SPEED - this.size / Bacteria.SPEED_DECREASE_FACTOR);
- 		System.out.println(rangeMax);
  		float rangeMin = -rangeMax;
 
  		// float rangeMin = -2.0;
@@ -254,7 +252,6 @@ class FoodFollowBacteria extends Bacteria
 
 			float rangeMax = Math.max(0.5, Bacteria.START_SPEED - this.size / Bacteria.SPEED_DECREASE_FACTOR);
 	 		float rangeMin = -rangeMax;
-	 		System.out.println(rangeMax);
 
  			this.x += rangeMin + (rangeMax - rangeMin) * Math.random() + Math.signum(this.targetedFood.getX() - this.x) * rangeMax;
  			this.y += rangeMin + (rangeMax - rangeMin) * Math.random() + Math.signum(this.targetedFood.getY() - this.y) * rangeMax; 
